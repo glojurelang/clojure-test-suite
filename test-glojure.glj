@@ -115,8 +115,8 @@
 <body>
     <div class='container'>
         <div class='summary'>
-            <h1>Gloat/Glojure Test Report</h1>
-            <div style='margin-bottom: 15px;'>The <a href='https://github.com/gloathub/clojure-test-suite' style='color: #1976d2; text-decoration: none;'>Clojure compatibility test suite</a> results for the <a href='https://gloathub.org' style='color: #1976d2; text-decoration: none;'>Gloat</a> project's <a href='https://github.com/gloathub/glojure' style='color: #1976d2; text-decoration: none;'>fork</a> of <a href='https://github.com/glojurelang/glojure' style='color: #1976d2; text-decoration: none;'>Glojure</a></div>
+            <h1>Glojure Test Report</h1>
+            <div style='margin-bottom: 15px;'>The <a href='https://github.com/glojurelang/clojure-test-suite' style='color: #1976d2; text-decoration: none;'>Clojure compatibility test suite</a> results for <a href='https://github.com/glojurelang/glojure' style='color: #1976d2; text-decoration: none;'>Glojure</a></div>
             <div class='progress'>
                 <div class='progress-bar' style='width: " pass-percent "%'>" pass-percent "%</div>
             </div>
@@ -200,7 +200,7 @@
       (println "Running Glojure test suite...")))
 
   ;; add test to load path
-  (github.com:gloathub:glojure:pkg:runtime.AddLoadPath (os.DirFS "./test"))
+  (github.com:glojurelang:glojure:pkg:runtime.AddLoadPath (os.DirFS "./test"))
 
   ;; Storage for detailed test results
   (let [test-results (atom {:summary {:pass 0 :fail 0 :error 0}

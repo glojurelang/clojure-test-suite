@@ -36,14 +36,14 @@
         :jank []
         :default
         [(is (instance? #?(:lpy python/int
-                           :glj github.com:gloathub:glojure:pkg:lang.*BigInt
+                           :glj github.com:glojurelang:glojure:pkg:lang.*BigInt
                            :default clojure.lang.BigInt) (bigint 0)))
          (is (instance? #?(:lpy python/int
-                           :glj github.com:gloathub:glojure:pkg:lang.*BigInt
+                           :glj github.com:glojurelang:glojure:pkg:lang.*BigInt
                            :default clojure.lang.BigInt) (bigint 0.0)))
          (is (instance? #?(:lpy python/int
-                           :glj github.com:gloathub:glojure:pkg:lang.*BigInt
+                           :glj github.com:glojurelang:glojure:pkg:lang.*BigInt
                            :default clojure.lang.BigInt) (inc' r/max-int)))
          (is (instance? #?(:lpy python/int
-                           :glj github.com:gloathub:glojure:pkg:lang.*BigInt
+                           :glj github.com:glojurelang:glojure:pkg:lang.*BigInt
                            :default clojure.lang.BigInt) (dec' r/min-int)))])))

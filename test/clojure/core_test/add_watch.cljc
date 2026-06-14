@@ -21,7 +21,7 @@
                                                     :clj clojure.lang.ExceptionInfo
                                                     :cljr clojure.lang.ExceptionInfo
                                                     :lpy basilisp.lang.exception/ExceptionInfo
-                                                    :glj github.com:gloathub:glojure:pkg:lang.IExceptionInfo) e
+                                                    :glj github.com:glojurelang:glojure:pkg:lang.IExceptionInfo) e
                                             (let [data (ex-data e)]
                                               (vswap! state conj data)))))]
                         (do-update a)
@@ -93,7 +93,7 @@
                                                          :clj clojure.lang.ExceptionInfo
                                                          :cljr clojure.lang.ExceptionInfo
                                                          :lpy basilisp.lang.exception/ExceptionInfo
-                                                         :glj github.com:gloathub:glojure:pkg:lang.IExceptionInfo) e
+                                                         :glj github.com:glojurelang:glojure:pkg:lang.IExceptionInfo) e
                                                  (let [{:keys [old] :as data} (ex-data e)]
                                                    (vswap! state conj data)))))]
                              (do-update #'testvar-a)

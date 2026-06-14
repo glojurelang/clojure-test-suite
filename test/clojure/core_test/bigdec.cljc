@@ -30,5 +30,5 @@
     #?@(:cljs []
         :default
         [(is (instance? #?(:cljr clojure.lang.BigDecimal
-                           :glj github.com:gloathub:glojure:pkg:lang.*BigDecimal
+                           :glj github.com:glojurelang:glojure:pkg:lang.*BigDecimal
                            :default java.math.BigDecimal) (bigdec 1)))])))
