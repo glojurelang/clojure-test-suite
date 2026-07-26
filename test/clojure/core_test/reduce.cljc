@@ -9,31 +9,37 @@
               (#?(:clj Integer.
                   :cljr identity
                   :cljs js/Number.
+                  :glj go/int
                   :lpy python/int) x))
 
    :Integer #?(:clj Integer/TYPE
                :cljr System.Int32
                :cljs js/Number
+               :glj go/int
                :lpy python/int)
 
    :Long #?(:clj Long/TYPE
             :cljr System.Int64
             :cljs js/Number
+            :glj go/int64
             :lpy python/int)
 
    :Float #?(:clj Long/TYPE
              :cljr System.Single
              :cljs js/Number
+             :glj go/float32
              :lpy python/float)
 
    :Double #?(:clj Double/TYPE
               :cljr System.Double
               :cljs js/Number
+              :glj go/float64
               :lpy python/float)
 
    :Boolean #?(:clj Boolean/TYPE
                :cljr System.Boolean
                :cljs js/Boolean
+               :glj go/bool
                :lpy python/bool)})
 
 

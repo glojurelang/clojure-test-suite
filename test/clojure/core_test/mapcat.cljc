@@ -19,7 +19,7 @@
     (testing "into with transducer"
       (is (= [0 0 1 1 2 2] (into [] (mapcat #(repeat 2 %)) (range 3)))))
     (testing "infinite input laziness"
-      (is (= [0 0 1 1 2]  (take 5 (mapcat #(repeat 2 %) (range)))))))
+      (is (= [0 0 1 1 2]  (take 5 (mapcat #(repeat 2 %) (range))))))
     (testing "empty collection input"
       (is (= [] (mapcat identity []))))
     (testing "single element producing empty sequence"
@@ -38,7 +38,7 @@
     (testing "one collection shorter than the other"
       (is (= [2 4] (mapcat (fn [x y] [(* x y)]) [1 2] [2 2 2]))))
     (testing "works lazily on infinite input"
-      (is (= [0 1 2 3 4 5] (->> (mapcat (fn [x] [x]) (range)) (take 6))))))
+      (is (= [0 1 2 3 4 5] (->> (mapcat (fn [x] [x]) (range)) (take 6)))))
     (testing "function sometimes returns []"
       (is (= [1 3 5] (mapcat #(if (odd? %) [%] []) (range 1 6)))))
     (testing "function sometimes returns nil"

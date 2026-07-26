@@ -5,8 +5,8 @@
 (when-var-exists ancestors
 
   ; Some classes for testing ancestors by type inheritance
-  (def AncestorT #?(:cljs js/Object :lpy python/object :default Object))
-  (def ChildT #?(:cljs :default :lpy basilisp.lang.set/PersistentSet :default clojure.lang.PersistentHashSet))
+  (def AncestorT #?(:cljs js/Object :lpy python/object :glj go/any :default Object))
+  (def ChildT #?(:cljs :default :lpy basilisp.lang.set/PersistentSet :glj github.com:glojurelang:glojure:pkg:lang.*Set :default clojure.lang.PersistentHashSet))
 
   ; Some custom types for testing ancestors by type inheritance
   (defprotocol TestAncestorsProtocol)

@@ -13,12 +13,20 @@
   (let [base (last (clojure.string/split path #"/"))]
     (first (clojure.string/split base #"\."))))
 
+(defn test-file->namespace [path]
+  (-> path
+      (clojure.string/replace #"^test/" "")
+      (clojure.string/replace #"\.cljc$" "")
+      (clojure.string/replace #"_" "-")
+      (clojure.string/replace #"/" ".")
+      symbol))
+
 (defn load-test-file [path]
   (try
     (load-file path)
-    true
+    nil
     (catch go/any e
-      false)))
+      e)))
 
 (defn find-test-files []
   (let [test-dir "test/clojure/core_test"
@@ -253,11 +261,29 @@
 
       ;; Load and run tests
       (let [all-test-files (concat (find-test-files) (find-string-test-files))
-            load-results (into {}
-                               (map (fn [f] [f (load-test-file f)]))
-                               all-test-files)
+            load-results (binding [t/report original-report]
+                           (into []
+                                 (map (fn [f] [f (load-test-file f)]))
+                                 all-test-files))
+            load-errors (keep (fn [[path load-error]]
+                                (when load-error [path load-error]))
+                              load-results)
             reader-skips (count-reader-conditional-skips all-test-files)
             num-reader-skips (reduce + 0 (map :count reader-skips))]
+
+        (doseq [[path load-error] load-errors]
+          (binding [*out* os.Stderr]
+            (println "LOAD ERROR" path ":" (.Error load-error))))
+
+        ;; Do not leave tests defined before a load failure eligible to run.
+        (doseq [[path _] load-errors]
+          (remove-ns (test-file->namespace path)))
+
+        (fmt.Println
+         (str "LOAD ERROR SUMMARY: " (count load-errors) " of "
+              (count all-test-files) " files failed to load"
+              (when (some? (:expect-load-errors opts))
+                (str "; expected " (:expect-load-errors opts)))))
 
         ;; Run tests based on whether a namespace was specified
         (if (:test-ns opts)
@@ -266,7 +292,7 @@
             (do
               (println "Invalid namespace:" (:test-ns opts))
               (os.Exit 1)))
-          (t/run-all-tests))
+          (t/run-all-tests #"^clojure\.(core|string)-test\..*$"))
 
         ;; Generate and write HTML report
         (let [html-content (generate-html-report @test-results reader-skips)
@@ -279,7 +305,8 @@
         ;; Exit with appropriate code
         (let [{:keys [test pass fail error]} (:summary @test-results)
               expect-failures (:expect-failures opts)
-              expect-errors (:expect-errors opts)]
+              expect-errors (:expect-errors opts)
+              expect-load-errors (:expect-load-errors opts)]
           (fmt.Println (str "\nRan " test " tests containing " (+ pass fail error) " assertions."))
           (fmt.Println (str fail " failures, " error " errors"
                             (when (pos? num-reader-skips)
@@ -289,10 +316,17 @@
           (let [failures-match? (or (nil? expect-failures)
                                     (= fail expect-failures))
                 errors-match? (or (nil? expect-errors)
-                                 (= error expect-errors))
-                success? (if (or expect-failures expect-errors)
+                                  (= error expect-errors))
+                load-errors-match? (or (nil? expect-load-errors)
+                                       (= (count load-errors)
+                                          expect-load-errors))
+                success? (if (or (some? expect-failures)
+                                 (some? expect-errors)
+                                 (some? expect-load-errors))
                           ;; If expectations are set, check they match
-                          (and failures-match? errors-match?)
+                          (and failures-match?
+                               errors-match?
+                               load-errors-match?)
                           ;; If no expectations, default behavior (zero failures/errors)
                           (and (zero? fail) (zero? error)))]
 
@@ -300,6 +334,10 @@
               (fmt.Println (str "Expected " expect-failures " failures, got " fail)))
             (when expect-errors
               (fmt.Println (str "Expected " expect-errors " errors, got " error)))
+            (when (some? expect-load-errors)
+              (fmt.Println
+               (str "Expected " expect-load-errors " load errors, got "
+                    (count load-errors))))
 
             (if success?
               (os.Exit 0)
@@ -320,6 +358,11 @@
           (= arg "--expect-errors")
           (recur (drop 2 args)
                  (assoc opts :expect-errors (first (strconv.Atoi (second args)))))
+
+          (= arg "--expect-load-errors")
+          (recur (drop 2 args)
+                 (assoc opts :expect-load-errors
+                        (first (strconv.Atoi (second args)))))
 
           :else
           (recur (rest args)
